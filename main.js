@@ -40,3 +40,91 @@ function menu() {
 
     return opcion;  /* con el retrurn hago que devuelva lo que escribio el usuario */
 }
+
+
+
+/* agregar tarea al array */
+function agregarTarea() {
+
+    let textoTarea = prompt("Escribe tu tarea:");
+
+    /* si la persona no pone nada  */
+    if (textoTarea == "" || textoTarea == null) {
+        alert("No escribiste nada.");
+        return;
+    }
+
+    tareas.push(textoTarea); /* guardo la tarea */
+
+    alert("Tarea agregada");
+    console.log("agregada:", textoTarea);
+}
+
+
+/* mostrar todas las tareas en pantalla y consola */
+function verTareas() {
+
+    if (tareas.length == 0) {
+        alert("No tienes tareas");
+        return;
+    }
+
+    let lista = "Tus tareas:\n\n";
+
+    /* recorro el array */
+    for (let i = 0; i < tareas.length; i++) {
+        lista += i + " - " + tareas[i] + "\n";
+        console.log(i, tareas[i]);
+    }
+
+    alert(lista);
+}
+
+
+/* funcion para completar una tarea */
+
+
+function completarTarea() {
+
+    if (tareas.length == 0) {
+        alert("No hay tareas");
+        return;
+    }
+
+    /* muestro las tareas en consola para ayudar al usuario */
+
+    console.log("tareas actuales:");
+    for (let i = 0; i < tareas.length; i++) {
+        console.log(i + " - " + tareas[i]);
+    }
+
+    /* aqui aclaro para que el usuario sepa que debe poner el NUMERO y no el nombre */
+
+
+
+    let numero = prompt("Escribe el NúMERO de la tarea que quieres completar");
+
+    /* con esto valido de que exista el numero de la tarea*/
+
+    if (numero == "" || numero == null || tareas[numero] == undefined) {
+        alert("Numero no valido");
+        return;
+    }
+
+    /* aqui les ppregunto si realmente quiere completar la tarea que esta haceindo */
+
+
+    let confirmar = confirm("¿Completar?\n" + tareas[numero]);
+
+           if (confirmar == false) {
+        alert("No se cambio nada");
+        return;
+    }
+
+    tareas[numero] = tareas[numero] + " COMPLETADA";
+
+
+
+    alert("Listo");
+       console.log("completada:", tareas[numero]);
+}
