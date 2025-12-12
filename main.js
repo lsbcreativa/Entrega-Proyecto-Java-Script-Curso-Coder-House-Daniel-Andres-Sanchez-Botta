@@ -128,3 +128,53 @@ function completarTarea() {
     alert("Listo");
        console.log("completada:", tareas[numero]);
 }
+
+
+/* parte principal del simulador */
+function simulador() {
+
+    inicio();  /* con esto  muestro el mensaje de bienvenida */
+
+    while (seguir == true) {       /* aca se repite el menu hasta que el usuario o yo salga del menu */
+
+        let opcion = menu(); /* aca guardo lo que el usuario eligio como su trrea */
+
+        
+        if (opcion == "1") {
+
+             agregarTarea();  /* agregamos aqui una tarea nueva */
+
+        }    else if (opcion == "2") {
+
+    verTareas();  /* muestro la lista de tareas */
+
+        }  else if (opcion == "3") {
+
+              completarTarea();  /* marco una tarea como completada */
+
+        }else if (opcion == "4") {
+
+            let salir = confirm("¿Salir?");
+            
+            if (salir == true) {
+
+                seguir = false;
+                alert("Gracias por usar el simulador");
+
+
+             return;  /* detengo esta parte para que no aparezca opcion incorrecta */
+            }
+
+        } else {
+
+            alert("Opcion incorrecta");  /* por si escrinimos algo que no es */
+
+        }
+    }
+}
+
+
+/* inicio del simulador, aqui comienza todo */
+
+
+simulador();
