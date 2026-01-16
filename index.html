@@ -1,75 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Simulador de tareas</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entregable 2 - Tareas</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
+  <main class="app">
+
+    <header class="top">
 
 
+      <h1>Mis tareas</h1>
 
-    <h1>
-    Simulador básico de tareas en JavaScript
-    </h1>
+      <p class="mini">Agrega tareas, márcalas como hechas o pendientes, y se guardan en localStorage.
 
-    <div class="caja">
+      </p>
 
-        <h2>
-            ¿Qué hace este simulador?
-        </h2>
+    </header>
 
+    <section class="card">
 
+      <form id="formTarea" class="form">
 
-        <p>
-            Este es un simulador sencillo que armé para la Entrega 1 de Coder House.
-            Funciona como una lista de tareas básica: puedo agregar tareas, verlas
-            y marcar alguna como completada. Todo funciona desde mensajes en pantalla
-            y parte se muestra en la consola.
-        </p>
+        <label class="label" for="inputTarea">Nueva tarea</label>
+        <div class="row">
 
 
+          <input id="inputTarea" class="input" type="text" placeholder="Ej: Comprar pan" autocomplete="off" />
+          <button id="btnAgregar" class="btn" type="submit">Agregar</button>
+        </div>
+
+        <p id="msg" class="msg"></p>
+      </form>
 
 
-        <h2>
-        Prácticas que utilicé en el simulador?
-        </h2>
-
-        <p>
-            Para hacerlo usé variables, arrays, funciones, condicionales
-            (if y else), el ciclo while, el recorrido con for y los mensajes
-            prompt, alert y confirm. También muestro cosas en la consola con console.log.
-        </p>
-
-        <h2>
-            Cómo probarlo
-        </h2>
+      <div class="tools">
 
 
+        <div class="filters">
 
-        <p>
-            1. Abrir la consola del navegador (por ejemplo en “Inspeccionar”).<br>
-            2. Recargar la página si fuera necesario.<br>
-            3. Seguir lo que aparece en los mensajes y escribir el número de la opción
-               que quiera usar.
-        </p>
+          <button class="chip" id="filtroTodas" type="button">Todas</button>
+          <button class="chip" id="filtroPendientes" type="button">Pendientes</button>
+          <button class="chip" id="filtroHechas" type="button">Hechas</button>
+        </div>
 
+        <div class="right">
 
+          <span id="contador" class="counter">0</span>
 
-        <p class="nota">
-            Toda la lógica del simulador está en el archivo main.js. Desde aquí solo lo
-            explico de forma simple para entender de qué trata.
-        </p>
+          <button id="btnBorrarHechas" class="chip" type="button">Borrar hechas</button>
 
-        
-    </div>
+          <button id="btnLimpiar" class="chip danger" type="button">Borrar todo</button>
 
 
+        </div>
+      </div>
+
+      <hr class="line" />
+
+      <!-- aqui es donde van las tareas (pendientes y hechas) -->
 
 
-    <!-- aqui cargo mi archivo de javascript -->
-    <script src="main.js"></script>
+      <ul id="listaTareas" class="list"></ul>
+    </section>
 
+    <footer class="foot">
+
+      <small>Entregable 2 - JS + DOM + eventos + localStorage</small>
+
+    </footer>
+     </main>
+
+     <!-- aqui enlazo mi main JS -->
+
+  <script src="main.js"></script>
 </body>
 </html>

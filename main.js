@@ -1,180 +1,295 @@
 
-
-/* simulador basico de tareas - Entrega 1 para curso JS de Coder House */ 
-
-
-/* aca guardo todas mis tareas */
-let tareas = [];
-
-/* esto sirve para que el simulador siga funcionando */
+// aca guardo mis tareas
+let tareas = []
+let filtroActual = "todas"
 
 
-let seguir = true;
+// agarro el html
+const formTarea = document.getElementById("formTarea")
 
 
-/* mensaje simple de inicio con bienvenidaa */
+const inputTarea = document.getElementById("inputTarea")
+  const listaTareas = document.getElementById("listaTareas")
+
+const msg = document.getElementById("msg")
+
+const contador = document.getElementById("contador")
+
+const filtroTodas = document.getElementById("filtroTodas")
+
+const filtroPendientes = document.getElementById("filtroPendientes")
+
+const filtroHechas = document.getElementById("filtroHechas")
+
+const btnBorrarHechas = document.getElementById("btnBorrarHechas")
+
+  const btnLimpiar = document.getElementById("btnLimpiar")
 
 
-function inicio() {
+
+// cargo del storage
+
+const guardado = localStorage.getItem("tareas")
+
+ if (guardado) tareas = JSON.parse(guardado)
+
+pintarTareas()
+
+marcarFiltroActivo("todas")
 
 
-    alert("Bienvenido :) abre la consola del navegador (inspeccionar)");
-    console.log("Simulador de tareas");
+
+// agregar
+formTarea.addEventListener("submit", (e) => {
+
+  e.preventDefault()
+
+  const texto = inputTarea.value.trim()
+
+  if (texto === "") {
+
+    mostrarMsg("Escribe algo pues jovencitoo 😅")
+     return
+  }
+
+  tareas.push({
+
+    id: Date.now(),
+
+    texto: texto,
+    hecha: false
+
+  })
+
+  inputTarea.value = ""
+
+  guardarEnStorage()
+
+  pintarTareas()
+
+  mostrarMsg("Listo, tarea agregada")
+})
+
+
+
+// filtros
+filtroTodas.addEventListener("click", () => {
+  filtroActual = "todas"
+    marcarFiltroActivo("todas")
+  pintarTareas()
+
+})
+
+filtroPendientes.addEventListener("click", () => {
+  filtroActual = "pendientes" 
+
+  marcarFiltroActivo("pendientes")
+
+  pintarTareas()
+})
+
+filtroHechas.addEventListener("click", () => {
+  filtroActual = "hechas"
+
+  marcarFiltroActivo("hechas")
+  pintarTareas()
+
+})
+
+
+
+/* borrar las tareas hechas */
+btnBorrarHechas.addEventListener("click", () => {
+
+  const antes = tareas.length
+  tareas = tareas.filter(t => !t.hecha)
+
+  if (tareas.length === antes) {
+
+    mostrarMsg("No hay tareas hechas para borrar")
+
+
+    return
+  }
+
+  guardarEnStorage()
+
+  pintarTareas()
+  mostrarMsg("Ya borré las tareas hechas")
+})
+
+
+/* 
+ limpiar todo */
+
+btnLimpiar.addEventListener("click", () => {
+
+  if (tareas.length === 0) {
+    
+    mostrarMsg("No hay nada para limpiar aqui joven")
+    return
+  }
+
+  tareas = []
+  guardarEnStorage()
+  pintarTareas()
+
+  mostrarMsg("Ya quedó en cero")
+
+    })
+
+
+
+// click en lista (toggle / borrar)
+
+listaTareas.addEventListener("click", (e) => {
+
+  const boton = e.target
+
+  if (boton.classList.contains("toggle")) {
+
+
+    const id = Number(boton.value)
+
+    const tarea = tareas.find(t => t.id === id)
+      if (!tarea) return
+
+    tarea.hecha = !tarea.hecha
+
+    guardarEnStorage()
+
+    pintarTareas()
+
+     return
+  }
+
+
+  if (boton.classList.contains("borrar")) {
+
+
+      const id = Number(boton.value)
+
+    tareas = tareas.filter(t => t.id !== id)
+
+    guardarEnStorage()
+
+    pintarTareas()
+
+
+    mostrarMsg("Tarea borrada")
+
+      return
+  }
+
+})
+
+
+function pintarTareas() {
+
+  listaTareas.innerHTML = ""
+
+   let lista = tareas
+
+
+
+        if (filtroActual === "pendientes") {
+
+    lista = tareas.filter(t => !t.hecha)
+
+  }
+
+  if (filtroActual === "hechas") {
+
+
+    lista = tareas.filter(t => t.hecha)
+
+  }
+
+
+  if (lista.length === 0) {
+
+   
+    listaTareas.innerHTML = `<li class="vacio">No hay tareas acá</li>`
+
+
+    actualizarContador()
+      return
+  }
+
+
+  lista.forEach((t) => {
+
+    const estado = t.hecha ? "Hecha" : "Pendiente"
+
+    listaTareas.innerHTML += `
+      <li class="item ${t.hecha ? "hecha" : ""}">
+
+        <span>${t.texto}</span>
+
+        <div class="acciones">
+        <button class="toggle" value="${t.id}">
+
+
+            ${estado}
+           </button>
+
+      <button class="borrar" value="${t.id}">
+            X
+          </button>
+  </div>
+  </li>
+    `
+  })
+
+  actualizarContador()
+}
+
+function guardarEnStorage() {
+  localStorage.setItem("tareas", JSON.stringify(tareas))
+
 
 }
 
 
-/* menu donde el usuario elige que quiere hacer   */
-function menu() {
 
+function actualizarContador() {
 
+  const pendientes = tareas.filter(t => !t.hecha).length
 
-    let opcion = prompt(
-        "Elige una opcion:\n" +
-        "1 Agregar tarea\n" +
-        "2 Ver tareas\n" +
-        "3 Completar tarea\n" +
-        "4 Salir"
-    );
+    const hechas = tareas.filter(t => t.hecha).length
 
+  contador.textContent = `Pendientes: ${pendientes} | Hechas: ${hechas} | Total: ${tareas.length}`
 
-    return opcion;  /* con el retrurn hago que devuelva lo que escribio el usuario */
 }
 
 
+function mostrarMsg(texto) {
 
-/* agregar tarea al array */
-function agregarTarea() {
+  if (!msg) return
 
-    let textoTarea = prompt("Escribe tu tarea:");
+  msg.textContent = texto
 
-    /* si la persona no pone nada  */
-    if (textoTarea == "" || textoTarea == null) {
-        alert("No escribiste nada.");
-        return;
-    }
+  msg.classList.add("show")
 
-    tareas.push(textoTarea); /* guardo la tarea */
+  setTimeout(() => {
 
-    alert("Tarea agregada");
-    console.log("agregada:", textoTarea);
+    msg.classList.remove("show")
+  }, 1700)
+
+
 }
 
+  function marcarFiltroActivo(f) {
 
-/* mostrar todas las tareas en pantalla y consola */
-function verTareas() {
+  filtroTodas.classList.remove("activo")
 
-    if (tareas.length == 0) {
-        alert("No tienes tareas");
-        return;
-    }
+    filtroPendientes.classList.remove("activo")
+    
+  filtroHechas.classList.remove("activo")
 
-    let lista = "Tus tareas:\n\n";
+  if (f === "todas") filtroTodas.classList.add("activo")
+    if (f === "pendientes") filtroPendientes.classList.add("activo")
 
-    /* recorro el array */
-    for (let i = 0; i < tareas.length; i++) {
-        lista += i + " - " + tareas[i] + "\n";
-        console.log(i, tareas[i]);
-    }
-
-    alert(lista);
+   if (f === "hechas") filtroHechas.classList.add("activo")
 }
 
-
-/* funcion para completar una tarea */
-
-
-function completarTarea() {
-
-    if (tareas.length == 0) {
-        alert("No hay tareas");
-        return;
-    }
-
-    /* muestro las tareas en consola para ayudar al usuario */
-
-    console.log("tareas actuales:");
-    for (let i = 0; i < tareas.length; i++) {
-        console.log(i + " - " + tareas[i]);
-    }
-
-    /* aqui aclaro para que el usuario sepa que debe poner el NUMERO y no el nombre */
-
-
-
-    let numero = prompt("Escribe el NúMERO de la tarea que quieres completar");
-
-    /* con esto valido de que exista el numero de la tarea*/
-
-    if (numero == "" || numero == null || tareas[numero] == undefined) {
-        alert("Numero no valido");
-        return;
-    }
-
-    /* aqui les ppregunto si realmente quiere completar la tarea que esta haceindo */
-
-
-    let confirmar = confirm("¿Completar?\n" + tareas[numero]);
-
-           if (confirmar == false) {
-        alert("No se cambio nada");
-        return;
-    }
-
-    tareas[numero] = tareas[numero] + " COMPLETADA";
-
-
-
-    alert("Listo");
-       console.log("completada:", tareas[numero]);
-}
-
-
-/* parte principal del simulador */
-function simulador() {
-
-    inicio();  /* con esto  muestro el mensaje de bienvenida */
-
-    while (seguir == true) {       /* aca se repite el menu hasta que el usuario o yo salga del menu */
-
-        let opcion = menu(); /* aca guardo lo que el usuario eligio como su trrea */
-
-        
-        if (opcion == "1") {
-
-             agregarTarea();  /* agregamos aqui una tarea nueva */
-
-        }    else if (opcion == "2") {
-
-    verTareas();  /* muestro la lista de tareas */
-
-        }  else if (opcion == "3") {
-
-              completarTarea();  /* marco una tarea como completada */
-
-        }else if (opcion == "4") {
-
-            let salir = confirm("¿Salir?");
-            
-            if (salir == true) {
-
-                seguir = false;
-                alert("Gracias por usar el simulador");
-
-
-             return;  /* detengo esta parte para que no aparezca opcion incorrecta */
-            }
-
-        } else {
-
-            alert("Opcion incorrecta");  /* por si escrinimos algo que no es */
-
-        }
-    }
-}
-
-
-/* inicio del simulador, aqui comienza todo */
-
-
-simulador();
