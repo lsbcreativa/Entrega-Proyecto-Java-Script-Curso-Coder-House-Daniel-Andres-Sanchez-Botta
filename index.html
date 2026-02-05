@@ -3,78 +3,117 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Entregable 2 - Tareas</title>
+
+  
+  <title>Proyecto Final - Simulador de Tareas</title>
+
   <link rel="stylesheet" href="style.css" />
+
+  <!-- libreria para reemplazar alerts (sweetalert2) -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
   <main class="app">
 
     <header class="top">
-
-
       <h1>Mis tareas</h1>
-
-      <p class="mini">Agrega tareas, márcalas como hechas o pendientes, y se guardan en localStorage.
-
+      <p class="mini">
+        Crea tareas, edítalas, márcalas como hechas y filtra. Todo se guarda en localStorage.
+        Además, al iniciar, se cargan tareas base desde un JSON (fetch async).
       </p>
-
     </header>
 
     <section class="card">
 
       <form id="formTarea" class="form">
-
         <label class="label" for="inputTarea">Nueva tarea</label>
+
         <div class="row">
-
-
-          <input id="inputTarea" class="input" type="text" placeholder="Ej: Comprar pan" autocomplete="off" />
+          <input
+            id="inputTarea"
+            class="input"
+            type="text"
+            placeholder="Ej: Comprar pan"
+            autocomplete="off"
+            value="Estudiar JavaScript (30 min)"
+          />
           <button id="btnAgregar" class="btn" type="submit">Agregar</button>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label class="label2" for="selectCategoria">Categoría</label>
+            <select id="selectCategoria" class="select">
+              <option value="">Cargando...</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="label2" for="selectPrioridad">Prioridad</label>
+            <select id="selectPrioridad" class="select">
+              <option value="baja">Baja</option>
+              <option value="media" selected>Media</option>
+              <option value="alta">Alta</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="label2" for="inputFecha">Vence</label>
+            <input id="inputFecha" class="input" type="date" />
+          </div>
+
+          <div class="field">
+            <label class="label2" for="inputMin">Minutos</label>
+            <input id="inputMin" class="input" type="number" min="5" step="5" value="30" />
+          </div>
         </div>
 
         <p id="msg" class="msg"></p>
       </form>
 
-
       <div class="tools">
-
-
         <div class="filters">
-
           <button class="chip" id="filtroTodas" type="button">Todas</button>
           <button class="chip" id="filtroPendientes" type="button">Pendientes</button>
           <button class="chip" id="filtroHechas" type="button">Hechas</button>
         </div>
 
         <div class="right">
-
           <span id="contador" class="counter">0</span>
 
           <button id="btnBorrarHechas" class="chip" type="button">Borrar hechas</button>
-
           <button id="btnLimpiar" class="chip danger" type="button">Borrar todo</button>
+        </div>
+      </div>
 
-
+      <div class="stats">
+        <div class="stat">
+          <span class="statLabel">Pendientes</span>
+          <span id="stPendientes" class="statValue">0</span>
+        </div>
+        <div class="stat">
+          <span class="statLabel">Hechas</span>
+          <span id="stHechas" class="statValue">0</span>
+        </div>
+        <div class="stat">
+          <span class="statLabel">Min. pendientes</span>
+          <span id="stMin" class="statValue">0</span>
         </div>
       </div>
 
       <hr class="line" />
 
-      <!-- aqui es donde van las tareas (pendientes y hechas) -->
-
-
+      <!-- aca es donde se renderiza todo desde JS -->
       <ul id="listaTareas" class="list"></ul>
+
     </section>
 
     <footer class="foot">
-
-      <small>Entregable 2 - JS + DOM + eventos + localStorage</small>
-
+      <small>Proyecto Final - JS + DOM + eventos + localStorage + fetch(JSON) + librería externa</small>
     </footer>
-     </main>
 
-     <!-- aqui enlazo mi main JS -->
+  </main>
 
   <script src="main.js"></script>
 </body>
