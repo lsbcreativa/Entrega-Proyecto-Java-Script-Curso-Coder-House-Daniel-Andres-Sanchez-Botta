@@ -43,17 +43,78 @@ body {
 
 .top {
   margin: 10px 0 18px;
+  text-align: center;
 }
 
 .top h1 {
-  font-size: 34px;
+  font-size: 38px;
   letter-spacing: .2px;
 }
 
+.tagline {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: .3px;
+}
+
 .mini {
-  margin-top: 8px;
+  margin-top: 10px;
   color: var(--muted);
+  line-height: 1.5;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.howto {
+  margin-bottom: 18px;
+}
+
+.howtoTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.howtoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.howtoStep {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.howtoStep p {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
   line-height: 1.4;
+}
+
+.howtoNum {
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  color: #06210f;
+  font-weight: 900;
+  font-size: 13px;
 }
 
 .card {
@@ -349,5 +410,8 @@ body {
 @media (max-width: 760px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .howtoGrid {
+    grid-template-columns: 1fr;
   }
 }

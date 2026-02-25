@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Gestor de tareas interactivo con categorías, prioridades, filtros y persistencia en localStorage. Proyecto final de JavaScript — CoderHouse." />
 
-
-  <title>Proyecto Final - Simulador de Tareas</title>
+  <title>Gestor de Tareas | Organiza tu productividad</title>
 
   <link rel="stylesheet" href="style.css" />
 
@@ -17,12 +17,48 @@
   <main class="app">
 
     <header class="top">
-      <h1>Mis tareas</h1>
+      <h1>Gestor de Tareas</h1>
+      <p class="tagline">Organiza tu día, controla tu productividad</p>
       <p class="mini">
-        Crea tareas, edítalas, márcalas como hechas y filtra. Todo se guarda en localStorage.
-        Además, al iniciar, se cargan tareas base desde un JSON.
+        Aplicación interactiva para gestionar tus tareas diarias. Asigna categorías, define prioridades,
+        establece fechas límite y lleva un registro del tiempo estimado. Todos los datos se guardan
+        automáticamente en tu navegador mediante localStorage, y al iniciar se cargan tareas base desde un JSON externo.
       </p>
     </header>
+
+    <section class="howto">
+      <h2 class="howtoTitle">Cómo usar</h2>
+      <div class="howtoGrid">
+        <div class="howtoStep">
+          <span class="howtoNum">1</span>
+          <div>
+            <strong>Crea una tarea</strong>
+            <p>Escribe un título, selecciona categoría, prioridad, fecha de vencimiento y tiempo estimado en minutos.</p>
+          </div>
+        </div>
+        <div class="howtoStep">
+          <span class="howtoNum">2</span>
+          <div>
+            <strong>Filtra y organiza</strong>
+            <p>Usa los filtros para ver todas las tareas, solo las pendientes o solo las completadas.</p>
+          </div>
+        </div>
+        <div class="howtoStep">
+          <span class="howtoNum">3</span>
+          <div>
+            <strong>Edita o elimina</strong>
+            <p>Cada tarea tiene botones para editarla o borrarla. También puedes marcarla como hecha con el checkbox.</p>
+          </div>
+        </div>
+        <div class="howtoStep">
+          <span class="howtoNum">4</span>
+          <div>
+            <strong>Guardado automático</strong>
+            <p>Tus datos persisten en el navegador. Cerrá la pestaña y al volver todo sigue igual.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="card">
 
@@ -110,7 +146,7 @@
     </section>
 
     <footer class="foot">
-      <small>Proyecto Final - JS + DOM + eventos + localStorage + fetch(JSON) + librería externa</small>
+      <small>Desarrollado por Daniel Andrés Sánchez Botta — Proyecto Final JavaScript, CoderHouse</small>
     </footer>
 
   </main>
