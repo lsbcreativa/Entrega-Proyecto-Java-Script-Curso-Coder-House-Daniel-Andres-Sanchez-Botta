@@ -5,6 +5,42 @@ let filtroActual = "todas"
 // key para no chocar con otras cosas
 const LS_KEY = "tareasCoderFinal_v1"
 const LS_SEED = "tareasCoderFinal_seeded_v1"
+const LS_FILTRO = "tareasCoderFinal_filtro_v1"
+
+// textos centralizados (asi no quedan strings sueltos por todo el codigo)
+const TEXTOS = {
+  validacion: {
+    tituloCorto: "Pon un texto de al menos 3 letras 😅"
+  },
+  toast: {
+    tareaAgregada:  "Tarea agregada",
+    tareaEditada:   "Tarea editada",
+    tareaBorrada:   "Tarea borrada",
+    hechasBorradas: "Hechas borradas",
+    todoLimpio:     "Listo, quedó limpio",
+    seedCargado:    "Listo: cargué tareas base del JSON",
+    jsonFallo:      "No se pudo cargar data.json, igual puedes usar el simulador",
+    noHayHechas:    "No hay hechas para borrar",
+    noHayTareas:    "No hay tareas para borrar"
+  },
+  swal: {
+    editarTitulo:       "Editar tarea",
+    guardar:            "Guardar",
+    cancelar:           "Cancelar",
+    borrarTareaTitulo:  "¿Borrar tarea?",
+    borrarTareaBtn:     "Sí, borrar",
+    borrarHechasTitulo: "Borrar hechas",
+    borrarHechasTexto:  (n) => `Se borrarán ${n} tareas hechas`,
+    borrarHechasBtn:    "Borrar",
+    borrarTodoTitulo:   "Borrar todo",
+    borrarTodoTexto:    "Esto borra todo (incluye pendientes)",
+    borrarTodoBtn:      "Sí, borrar todo"
+  },
+  lista: {
+    vacio:    "No hay tareas en este filtro 👀",
+    sinFecha: "Sin fecha"
+  }
+}
 
 // agarro el html
 const formTarea = document.getElementById("formTarea")
@@ -121,12 +157,12 @@ const cargarDesdeJSON = async () => {
       tareas = base
       guardar()
       localStorage.setItem(LS_SEED, "1")
-      toast("success", "Listo: cargué tareas base del JSON")
+      toast("success", TEXTOS.toast.seedCargado)
     }
   } catch (e) {
     // si falla el json, igual dejo que funcione todo (pero cumpli con el intento async)
     pintarCategorias(["General", "Estudio", "Trabajo", "Casa"])
-    toast("info", "No se pudo cargar data.json, igual puedes usar el simulador")
+    toast("info", TEXTOS.toast.jsonFallo)
   }
 }
 
@@ -150,6 +186,7 @@ const escapeHTML = (str) => {
 // filtros
 const setFiltro = (f) => {
   filtroActual = f
+  localStorage.setItem(LS_FILTRO, f)
   marcarChipActivo()
   render()
 }
@@ -160,10 +197,16 @@ const marcarChipActivo = () => {
   filtroHechas.classList.toggle("active", filtroActual === "hechas")
 }
 
-// validacion simple
+// validacion reutilizable (una sola fuente de verdad)
+const validarTitulo = (titulo) => {
+  if (!titulo || titulo.trim().length < 3) return TEXTOS.validacion.tituloCorto
+  return null
+}
+
 const validarForm = (titulo) => {
-  if (!titulo || titulo.trim().length < 3) {
-    msg.textContent = "Pon un texto de al menos 3 letras 😅"
+  const error = validarTitulo(titulo)
+  if (error) {
+    msg.textContent = error
     return false
   }
   msg.textContent = ""
@@ -212,12 +255,12 @@ const editarTarea = async (id) => {
   `
 
   const r = await Swal.fire({
-    title: "Editar tarea",
+    title: TEXTOS.swal.editarTitulo,
     html,
     focusConfirm: false,
     showCancelButton: true,
-    confirmButtonText: "Guardar",
-    cancelButtonText: "Cancelar",
+    confirmButtonText: TEXTOS.swal.guardar,
+    cancelButtonText: TEXTOS.swal.cancelar,
     preConfirm: () => {
       const titulo = document.getElementById("swalTitulo").value
       const categoria = document.getElementById("swalCat").value
@@ -225,8 +268,9 @@ const editarTarea = async (id) => {
       const fecha = document.getElementById("swalFecha").value
       const minutos = document.getElementById("swalMin").value
 
-      if (!titulo || titulo.trim().length < 3) {
-        Swal.showValidationMessage("El título debe tener al menos 3 letras")
+      const errorTitulo = validarTitulo(titulo)
+      if (errorTitulo) {
+        Swal.showValidationMessage(errorTitulo)
         return false
       }
 
@@ -246,7 +290,7 @@ const editarTarea = async (id) => {
 
   guardar()
   render()
-  toast("success", "Tarea editada")
+  toast("success", TEXTOS.toast.tareaEditada)
 }
 
 // borrar con confirm (sweetalert2)
@@ -255,12 +299,12 @@ const borrarTarea = async (id) => {
   if (!t) return
 
   const r = await Swal.fire({
-    title: "¿Borrar tarea?",
+    title: TEXTOS.swal.borrarTareaTitulo,
     text: t.titulo,
     icon: "warning",
     showCancelButton: true,
-    confirmButtonText: "Sí, borrar",
-    cancelButtonText: "Cancelar"
+    confirmButtonText: TEXTOS.swal.borrarTareaBtn,
+    cancelButtonText: TEXTOS.swal.cancelar
   })
 
   if (!r.isConfirmed) return
@@ -268,7 +312,7 @@ const borrarTarea = async (id) => {
   tareas = tareas.filter(x => x.id !== id)
   guardar()
   render()
-  toast("success", "Tarea borrada")
+  toast("success", TEXTOS.toast.tareaBorrada)
 }
 
 // aplicar filtro
@@ -278,8 +322,13 @@ const getFiltradas = () => {
   return tareas
 }
 
-// stats (para que se vea mas completo)
-const calcularStats = () => {
+// render separado en componentes (cada seccion visual tiene su funcion)
+
+const renderContador = (filtradas) => {
+  contador.textContent = filtradas.length
+}
+
+const renderStats = () => {
   const pendientes = tareas.filter(t => !t.hecha)
   const hechas = tareas.filter(t => t.hecha)
   const minPend = pendientes.reduce((acc, t) => acc + (Number(t.minutos) || 0), 0)
@@ -289,30 +338,37 @@ const calcularStats = () => {
   stMin.textContent = minPend
 }
 
-// render HTML desde JS (la parte clave de la consigna)
+const renderVacio = () => {
+  listaTareas.innerHTML = `
+    <li class="empty">
+      <div class="badge">${TEXTOS.lista.vacio}</div>
+    </li>
+  `
+}
+
+const renderLista = (filtradas) => {
+  listaTareas.innerHTML = filtradas.map(t => templateTarea(t)).join("")
+}
+
+// orquestador: llama a cada componente
 const render = () => {
   const filtradas = getFiltradas()
 
-  contador.textContent = filtradas.length
-  calcularStats()
+  renderContador(filtradas)
+  renderStats()
 
-  // si no hay nada, muestro un mini mensaje
   if (filtradas.length === 0) {
-    listaTareas.innerHTML = `
-      <li class="empty">
-        <div class="badge">No hay tareas en este filtro 👀</div>
-      </li>
-    `
+    renderVacio()
     return
   }
 
-  listaTareas.innerHTML = filtradas.map(t => templateTarea(t)).join("")
+  renderLista(filtradas)
 }
 
 const templateTarea = (t) => {
   const done = t.hecha ? "done" : ""
   const prioClass = `prio-${t.prioridad}`
-  const fechaTxt = t.fecha ? `Vence: ${t.fecha}` : "Sin fecha"
+  const fechaTxt = t.fecha ? `Vence: ${t.fecha}` : TEXTOS.lista.sinFecha
   const minTxt = (Number(t.minutos) || 0) > 0 ? `${t.minutos} min` : "0 min"
 
   return `
@@ -356,7 +412,7 @@ formTarea.addEventListener("submit", (e) => {
   inputTarea.value = ""
   inputMin.value = "30"
   inputFecha.value = ""
-  toast("success", "Tarea agregada")
+  toast("success", TEXTOS.toast.tareaAgregada)
 })
 
 filtroTodas.addEventListener("click", () => setFiltro("todas"))
@@ -365,15 +421,15 @@ filtroHechas.addEventListener("click", () => setFiltro("hechas"))
 
 btnBorrarHechas.addEventListener("click", async () => {
   const hechas = tareas.filter(t => t.hecha)
-  if (hechas.length === 0) return toast("info", "No hay hechas para borrar")
+  if (hechas.length === 0) return toast("info", TEXTOS.toast.noHayHechas)
 
   const r = await Swal.fire({
-    title: "Borrar hechas",
-    text: `Se borrarán ${hechas.length} tareas hechas`,
+    title: TEXTOS.swal.borrarHechasTitulo,
+    text: TEXTOS.swal.borrarHechasTexto(hechas.length),
     icon: "warning",
     showCancelButton: true,
-    confirmButtonText: "Borrar",
-    cancelButtonText: "Cancelar"
+    confirmButtonText: TEXTOS.swal.borrarHechasBtn,
+    cancelButtonText: TEXTOS.swal.cancelar
   })
 
   if (!r.isConfirmed) return
@@ -381,19 +437,19 @@ btnBorrarHechas.addEventListener("click", async () => {
   tareas = tareas.filter(t => !t.hecha)
   guardar()
   render()
-  toast("success", "Hechas borradas")
+  toast("success", TEXTOS.toast.hechasBorradas)
 })
 
 btnLimpiar.addEventListener("click", async () => {
-  if (tareas.length === 0) return toast("info", "No hay tareas para borrar")
+  if (tareas.length === 0) return toast("info", TEXTOS.toast.noHayTareas)
 
   const r = await Swal.fire({
-    title: "Borrar todo",
-    text: "Esto borra todo (incluye pendientes)",
+    title: TEXTOS.swal.borrarTodoTitulo,
+    text: TEXTOS.swal.borrarTodoTexto,
     icon: "warning",
     showCancelButton: true,
-    confirmButtonText: "Sí, borrar todo",
-    cancelButtonText: "Cancelar"
+    confirmButtonText: TEXTOS.swal.borrarTodoBtn,
+    cancelButtonText: TEXTOS.swal.cancelar
   })
 
   if (!r.isConfirmed) return
@@ -401,7 +457,7 @@ btnLimpiar.addEventListener("click", async () => {
   tareas = []
   guardar()
   render()
-  toast("success", "Listo, quedó limpio")
+  toast("success", TEXTOS.toast.todoLimpio)
 })
 
 // delegacion para clicks dentro de la lista
@@ -418,6 +474,35 @@ listaTareas.addEventListener("click", async (e) => {
   if (action === "delete") return borrarTarea(id)
 })
 
+// update puntual: solo toca el <li> que cambio (sin redibujar toda la lista)
+const renderToggleItem = (id) => {
+  const li = listaTareas.querySelector(`.item[data-id="${CSS.escape(id)}"]`)
+  if (!li) {
+    render()
+    return
+  }
+
+  const t = tareas.find(x => x.id === id)
+  if (!t) return
+
+  li.classList.toggle("done", t.hecha)
+  const check = li.querySelector(".check")
+  if (check) check.checked = t.hecha
+
+  const filtradas = getFiltradas()
+  renderContador(filtradas)
+  renderStats()
+
+  // si estamos en un filtro y el item ya no pertenece, lo sacamos
+  if (filtroActual === "pendientes" && t.hecha) {
+    li.remove()
+    if (getFiltradas().length === 0) renderVacio()
+  } else if (filtroActual === "hechas" && !t.hecha) {
+    li.remove()
+    if (getFiltradas().length === 0) renderVacio()
+  }
+}
+
 listaTareas.addEventListener("change", (e) => {
   const li = e.target.closest(".item")
   if (!li) return
@@ -431,7 +516,7 @@ listaTareas.addEventListener("change", (e) => {
 
   t.toggle()
   guardar()
-  render()
+  renderToggleItem(id)
 })
 
 // init
@@ -442,6 +527,12 @@ const init = async () => {
   // leo localstorage
   const guardadas = leer()
   tareas = guardadas.map(x => new Tarea(x))
+
+  // restauro filtro guardado
+  const filtroGuardado = localStorage.getItem(LS_FILTRO)
+  if (filtroGuardado && ["todas", "pendientes", "hechas"].includes(filtroGuardado)) {
+    filtroActual = filtroGuardado
+  }
 
   // cargo json (async) y categorias
   await cargarDesdeJSON()

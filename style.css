@@ -108,6 +108,15 @@ body {
   outline: none;
 }
 
+.select {
+  cursor: pointer;
+}
+
+.select option {
+  background: #1e293b;
+  color: #e5e7eb;
+}
+
 .input:focus, .select:focus {
   border-color: rgba(34,197,94,.55);
   box-shadow: 0 0 0 3px rgba(34,197,94,.12);
@@ -307,6 +316,32 @@ body {
   margin-top: 14px;
   color: var(--muted);
   text-align: center;
+}
+
+/* sweetalert2 tema oscuro */
+.swal2-popup {
+  background: #1e293b !important;
+  color: #e5e7eb !important;
+}
+
+.swal2-title {
+  color: #e5e7eb !important;
+}
+
+.swal2-input, .swal2-select {
+  background: rgba(0,0,0,.25) !important;
+  color: #e5e7eb !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+}
+
+.swal2-select option {
+  background: #1e293b;
+  color: #e5e7eb;
+}
+
+.swal2-validation-message {
+  background: rgba(239,68,68,.15) !important;
+  color: #e5e7eb !important;
 }
 
 @media (max-width: 760px) {
